@@ -6,4 +6,4 @@ set -o pipefail
 echo "Restoring dotnet tools..."
 dotnet tool restore
 
-FAKE_DETAILED_ERRORS=true dotnet fake build -t "$@"
+PAKET_SKIP_RESTORE_TARGETS=true FAKE_DETAILED_ERRORS=true dotnet fake build -t "$@"
