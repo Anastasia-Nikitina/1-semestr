@@ -6,11 +6,8 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="AssemblyInfo.fs" />
-        <Compile Include="Tests.fs" />
         <Compile Include="Main.fs" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="../../src/semester_1/semester_1.fsproj" />
+        <Compile Include="Tests.fs" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

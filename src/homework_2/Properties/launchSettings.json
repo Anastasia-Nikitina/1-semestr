@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "homework_2": {
+      "commandName": "Project",
+      "commandLineArgs": "--sixth 1 5 6"
+    }
+  }
+}

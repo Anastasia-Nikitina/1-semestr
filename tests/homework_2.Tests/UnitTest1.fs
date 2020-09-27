@@ -1,11 +1,6 @@
-module homework_2.Tests
+module ExpectoTemplate
 
-open NUnit.Framework
+open Expecto
 
-[<SetUp>]
-let Setup () =
-    ()
-
-[<Test>]
-let Test1 () =
-    Assert.Pass()
+[<EntryPoint>]
+let main argv = Tests.runTestsInAssembly defaultConfig argv
