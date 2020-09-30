@@ -41,7 +41,7 @@ let environVarAsBoolOrDefault varName defaultValue =
 // Metadata and Configuration
 //-----------------------------------------------------------------------------
 
-let productName = "semester_1"
+let productName = "homework_2"
 let sln = "semester_1.sln"
 
 let src = __SOURCE_DIRECTORY__  @@ "src"
@@ -73,7 +73,7 @@ let coverageThresholdPercent = 1
 let coverageReportDir =  __SOURCE_DIRECTORY__  @@ "docs" @@ "coverage"
 
 let gitOwner = "Anastasia-Nikitina"
-let gitRepoName = "semester_1"
+let gitRepoName = "homework"
 
 let gitHubRepoUrl = sprintf "https://github.com/%s/%s" gitOwner gitRepoName
 
@@ -100,7 +100,7 @@ let runtimes = [
     "win-x64", "CreateZip"
 ]
 
-let disableCodeCoverage = environVarAsBoolOrDefault "DISABLE_COVERAGE" false
+let disableCodeCoverage = environVarAsBoolOrDefault "DISABLE_COVERAGE" true
 
 let githubToken = Environment.environVarOrNone "GITHUB_TOKEN"
 Option.iter(TraceSecrets.register "<GITHUB_TOKEN>")
