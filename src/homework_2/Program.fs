@@ -10,7 +10,7 @@ type CLIArguments =
     |Third of  x:int * n:int
     |Fourth of right:int * left:int * n:int
     |Fifth
-    |Sixth of i: int * j:int * n:int 
+    |Sixth of i:int * j:int * n:int 
     interface IArgParserTemplate with
         member s.Usage =
             match s with
@@ -27,28 +27,28 @@ type CLIArguments =
         let results = parser.Parse(argv)
         let args = parser.ParseCommandLine argv
 
-        if results.Contains (First)
+        if results.Contains(First)
         then
             let x = args.GetResult(First)
-            let res=Functions.first x
+            let res = Functions.first x
             printfn "First result = %A" res
         elif results.Contains(Second)
         then
-            let x=args.GetResult(Second)
-            let res=Functions.second x
+            let x = args.GetResult(Second)
+            let res = Functions.second x
             printfn "Second result = %A" res
         elif results.Contains(Third)
         then
             let n, x = args.GetResult(Third) 
-            let arr=Functions.rndArray n
+            let arr = Functions.rndArray n
             printf "Generated array:  " 
             printfn "%A" arr
-            let res = Functions.third (arr, x)
+            let res = Functions.third(arr, x)
             printf "Third result = %A" res
         elif results.Contains(Fourth)
         then
             let right, left, n = args.GetResult(Fourth)
-            let arr=Functions.rndArray n
+            let arr = Functions.rndArray n
             printf "Generated array: ' " 
             printfn "%A" arr
             let res = Functions.fourth(arr, left, right)

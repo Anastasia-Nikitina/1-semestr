@@ -1,4 +1,4 @@
-module Tests
+  module Tests
 
 
   open Expecto
@@ -33,10 +33,10 @@ module Tests
 
          testCase "Ноль находится в промежутке между -1 и 1" <| fun _ ->
              let subject = Functions.fourth ([|16; 31; 0; -4; 0; 11|], -1, 1)
-             Expect.equal subject [|0; 1; 3; 5|] "Результат должен выводить массив с номерами элементов-нулей"
+             Expect.equal subject [|0; 1; 3; 5|] "Результат должен выводить массив с номерами ненулевых элементов"
 
          testCase "Нулевой и первый элементы массива должны меняться местами" <| fun _ ->
-             let subject = Functions. fifth [|8; 10|]
+             let subject = Functions.fifth [|8; 10|]
              Expect.equal subject [|10; 8|] "Нулевой и первый элементы массива должны меняться местами"
 
          testCase "Нулевой и пооследний элементы массива должны меняться местами" <| fun _ ->
