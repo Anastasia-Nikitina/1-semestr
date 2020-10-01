@@ -266,9 +266,3 @@ coverage.*.xml
 # Paket tool store
 .paket/.store
 .paket/paket
-
-# Content docs
-Content/Library/docs/
-Content/Console/docs/
-Content/Library/.paket/paket
-Content/Console/.paket/paket
