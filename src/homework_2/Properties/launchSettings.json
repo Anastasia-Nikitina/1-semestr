@@ -1,7 +1,8 @@
 {
   "profiles": {
     "homework_2": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--fifthhw3 10"
     }
   }
 }
