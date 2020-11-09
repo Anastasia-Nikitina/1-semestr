@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "homework4": {
+      "commandName": "Project",
+      "commandLineArgs": "--unpacking64to16"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+Paket version 5.249.2
+Dependencies files saved to C:\good_homework\homework\paket.dependencies
+Package Argu already installed in project C:\good_homework\homework\src\homework_2\homework.fsproj in group Main
+ - Creating model and downloading packages.
+ - Installing for projects
+   - homework4/paket.references -> homework4/homework4 - Backup.fsproj (MSBuild 15)
+   - homework4/paket.references -> homework4/homework4.fsproj (MSBuild 15)
+   - src/homework_2/paket.references -> src/homework_2/homework.fsproj (MSBuild 15)
+   - tests/homework2.Tests/paket.references -> tests/homework2.Tests/homework2.Tests.fsproj (MSBuild 15)
+Performance:
+ - Disk IO: 17 milliseconds
+ - Runtime: 4 seconds
