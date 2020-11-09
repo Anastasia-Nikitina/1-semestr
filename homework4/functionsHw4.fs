@@ -27,7 +27,7 @@ let writeArray file array =
 let writeList file list =
     File.WriteAllLines (file, arrayIntoString (List.toArray list))
 
-let bubbleSortOfArray (arr: int array)  =    
+let bubbleSortOfArray (arr: array<int>)  =    
     for i = 1 to arr.Length - 1 do
         for j = 0 to arr.Length - 2 do
             if arr.[j] > arr.[j+1]
@@ -37,7 +37,7 @@ let bubbleSortOfArray (arr: int array)  =
                 arr.[j] <- x
     arr
 
-let quickSortOfList (list: int list) =
+let quickSortOfList (list: list<int>) =
     let rec sort list1 =
       match list1 with
       |[] -> []

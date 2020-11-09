@@ -36,7 +36,6 @@ type CLIArguments =
         let res = fun1 (fun2(Console.ReadLine()))
         printfn "Enter the name of the output file:"
         fun3(Console.ReadLine()) res
-
     if   results.Contains BubbleSortArray then mainFun (bubbleSortOfArray) (readArray) (writeArray)
     elif results.Contains BubbleSortList then mainFun (bubbleSortOfList) (readList) (writeList)
     elif results.Contains QuickSortList then mainFun (quickSortOfList) (readList) (writeList)   

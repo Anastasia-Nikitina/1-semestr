@@ -10,6 +10,5 @@
     <Compile Include="functionsHw4.fs" />
     <Compile Include="ProgramHw4.fs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
