@@ -7,14 +7,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Sample.fs" />
-    <Compile Include="hw4Tests.fs" />
+    <Compile Include="hw4Tests.fs" />   
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Expecto" Version="9.*" />
     <PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.*" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.*" />
-    <ProjectReference Include="..\..\src\homework_2\homework_2.fsproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.*" />   
     <ProjectReference Include="..\..\homework4\homework4.fsproj" />
     <ProjectReference Include="..\..\src\homework_2\homework.fsproj" />
     <PackageReference Update="FSharp.Core" Version="4.*" />
