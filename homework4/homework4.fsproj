@@ -5,8 +5,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="output.txt" />
-    <Content Include="input.txt" />
     <Compile Include="functionsHw4.fs" />
     <Compile Include="ProgramHw4.fs" />
   </ItemGroup>
