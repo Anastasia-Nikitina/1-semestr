@@ -6,7 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C397A34C-84F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ACBEE43C-7A88-4FB1-9B06-DB064D22B29F}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "homework_2", "src\homework_2\homework_2.fsproj", "{7744C7C0-B570-4B66-843E-CB1CE1D6C475}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "homework", "src\homework_2\homework.fsproj", "{7744C7C0-B570-4B66-843E-CB1CE1D6C475}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "homework2.Tests", "tests\homework2.Tests\homework2.Tests.fsproj", "{697A98E0-5E2A-4032-AE80-F48E81F86666}"
 EndProject

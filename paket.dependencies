@@ -12,6 +12,7 @@ nuget Packaging.Targets 0.1.155
 nuget NUnit3TestAdapter
 nuget Fake.Tools.Git
 nuget NUnit
+nuget Expecto.FsCheck
 // [ FAKE GROUP ]
 group Build
     storage: none
