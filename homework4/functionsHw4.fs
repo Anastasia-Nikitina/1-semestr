@@ -28,7 +28,7 @@ let writeArray file array =
 let writeList file list =
     File.WriteAllLines(file, arrayIntoString (List.toArray list))
 
-let bubbleSortOfArray (arr: array<int>) =
+let bubbleSortOfArray (arr: array<_>) =
     for i = 1 to arr.Length - 1 do
         for j = 0 to arr.Length - 2 do
             if arr.[j] > arr.[j + 1]
@@ -37,7 +37,6 @@ let bubbleSortOfArray (arr: array<int>) =
                 arr.[j + 1] <- arr.[j]
                 arr.[j] <- x
     arr
-
 
 let quickSortOfList list =
     let rec sort list1 =
@@ -49,7 +48,6 @@ let quickSortOfList list =
             sort less @ [ pivot ] @ sort great
     sort list
 
-
 let bubbleSortOfList list =
     let rec bubble list1 =
         match list1 with
@@ -57,28 +55,23 @@ let bubbleSortOfList list =
         | head :: [] -> [ head ]
         | head1 :: head2 :: tail ->
             if head1 > head2
-            then
-                head2 :: bubble (head1 :: tail)
-            else
-                head1 :: bubble (head2 :: tail)
-
-    let rec go (list2: list<int>) k =
+            then head2 :: bubble (head1 :: tail)
+            else head1 :: bubble (head2 :: tail)
+    let rec go (list2: list<_>) k =
         if k <> list2.Length
-        then
-            go (bubble list2) (k + 1)
-        else
-            list2
+        then go (bubble list2) (k + 1)
+        else list2
     go list 0
 
 let quickSortOfArray a =
-    let rec sort (arr: array<int>, first, last) =
+    let rec sort (arr: array<_>, first, last) =
         let mutable i = first
         let mutable j = last
         let pivot = arr.[(first + last) / 2]
         while i <= j do
-            while (arr.[i] < pivot) do
+            while arr.[i] < pivot do
                 i <- i + 1
-            while (arr.[j] > pivot) do
+            while arr.[j] > pivot do
                 j <- j - 1
             if i <= j
             then
@@ -101,10 +94,8 @@ let quickSortOfArray a =
 
 let packing32BitNumber (x: int32, y: int32) =
     if y >= 0
-    then
-        (int64 x <<< 32) + int64 y
-    else
-        (int64 (x + 1) <<< 32) + int64 y
+    then (int64 x <<< 32) + int64 y
+    else (int64 (x + 1) <<< 32) + int64 y
 
 let unPacking64to32BitNumber (a: int64) =
     int32 (a >>> 32), int32 ((a <<< 32) >>> 32)
@@ -112,15 +103,12 @@ let unPacking64to32BitNumber (a: int64) =
 let packing16BitNumber (a: int16, b: int16, c: int16, d: int16) =
     let pack16to32 (x: int16, y: int16) =
         if y >= 0s
-        then
-            (int32 x <<< 16) + int32 y
-        else
-            (int32 (x + 1s) <<< 16) + int32 y
+        then (int32 x <<< 16) + int32 y
+        else (int32 (x + 1s) <<< 16) + int32 y
     packing32BitNumber (pack16to32 (a, b), pack16to32 (c, d))
 
 let unPacking64to16BitNumber (x: int64) =
     let unPack32to16 (a: int32) =
         int16 (a >>> 16), int16 ((a <<< 16) >>> 16)
-
     let a, b = unPacking64to32BitNumber x
     unPack32to16 a, unPack32to16 b
