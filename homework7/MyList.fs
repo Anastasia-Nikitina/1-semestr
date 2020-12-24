@@ -4,13 +4,13 @@ type MyList<'t> =
     | Single of 't
     | Cons of 't * MyList<'t>
 
-let rec fold f acc list =
+let rec Fold f acc list =
     match list with
     | Single x -> f acc x
-    | Cons (head, tail) -> fold f (f acc head) tail
+    | Cons (head, tail) -> Fold f (f acc head) tail
 
 let Length list =
-    fold (fun q x -> q + 1) 0 list
+    Fold (fun q x -> q + 1) 0 list
 
 let rec Map f list =
     match list with
@@ -35,7 +35,12 @@ let rec TransformToMyList list =
     | [a] -> Single a
     | head :: tail -> Cons (head, TransformToMyList tail)
 
-let sort list =
+let rec TransformToSystemList list =
+    match list with
+    | Single x -> [x]
+    | Cons (head, tail) -> [head] @ TransformToSystemList tail
+
+let Sort list =
     let rec go1 list1 =
         match list1 with
         | Single x -> Single x
