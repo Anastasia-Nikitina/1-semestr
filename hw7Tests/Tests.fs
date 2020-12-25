@@ -16,7 +16,14 @@ let PropertyTestsForLists =
          testProperty "Comparision my fold with system fold" <| fun (list: list<int>) ->
             if not list.IsEmpty
             then
-                Expect.equal (MyList.Fold (fun sum x -> x + sum) 0 (TransformToMyList list))  (List.fold (fun sum x -> x + sum) 0 list)
+                Expect.equal (MyList.Fold (+) 0 (TransformToMyList list))  (List.fold (+) 0 list)
+            else
+                Expect.sequenceEqual list []
+         testProperty "Comparision my fold with system fold, division" <| fun (list: list<int>) ->
+            let lst = List.filter (fun x -> x <> 0) list
+            if not lst.IsEmpty
+            then
+                Expect.equal (MyList.Fold (fun x y -> x / y) 0 (TransformToMyList (lst)))  (List.fold (fun x y -> x / y) 0 lst)
             else
                 Expect.sequenceEqual list []
          testProperty "Comparision my getLength with system getLength" <| fun (list: list<int>) ->
@@ -39,17 +46,6 @@ let PropertyTestsForLists =
                  if list1.IsEmpty
                  then Expect.equal list1 []
                  else Expect.equal list2 []
-        ]
-
-[<Tests>]
-let TestsForLists =
-    testList "Test for associativity fold"
-        [testCase "Associatavity fold " <| fun _ ->
-            let list1 = [1; 2; 3; 4; 5]
-            let list2 = [5; 4; 3; 2; 1]
-            let res1 = MyList.Fold (fun sum x -> x + sum) 0 (TransformToMyList list1)
-            let res2 = MyList.Fold (fun sum x -> x + sum) 0 (TransformToMyList list2)
-            Expect.equal res1 res2 ""             
         ]
 
 [<Tests>]

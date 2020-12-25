@@ -38,7 +38,7 @@ let rec TransformToMyList list =
 let rec TransformToSystemList list =
     match list with
     | Single x -> [x]
-    | Cons (head, tail) -> [head] @ TransformToSystemList tail
+    | Cons (head, tail) -> head :: TransformToSystemList tail
 
 let Sort list =
     let rec go1 list1 =
@@ -57,4 +57,3 @@ let Sort list =
         then go2 (go1 list2) (k + 1)
         else list2
     go2 list 0
-
