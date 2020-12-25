@@ -23,10 +23,10 @@ let PropertyTestsForLists =
             let lst = List.filter (fun x -> x <> 0) list
             if not lst.IsEmpty
             then
-                let expected = List.fold (fun x y -> x / y) lst.Head lst.Tail
+                let expected = List.fold (/) lst.Head lst.Tail
                 let res =
                     match TransformToMyList lst with
-                    | Cons (head, tail) -> MyList.Fold (fun x y -> x / y) head tail
+                    | Cons (head, tail) -> MyList.Fold (/) head tail
                     | Single x -> x
                 Expect.equal res expected
             else
@@ -51,6 +51,21 @@ let PropertyTestsForLists =
                  if list1.IsEmpty
                  then Expect.equal list1 []
                  else Expect.equal list2 []
+         testProperty  "Comparision my iter with system iter" <| fun (list: list<int>) ->
+             if not list.IsEmpty 
+             then
+                 let a1 = Array.zeroCreate (List.length list)
+                 let a2 = Array.zeroCreate (List.length list)
+                 let f (a: int[]) =
+                     let mutable i = 0
+                     (fun x ->
+                     a.[i] <- x*x
+                     i <- i + 1)
+                 List.iter (f a1) list
+                 MyList.Iter (f a2) (TransformToMyList list)    
+                 Expect.sequenceEqual  a1 a2
+             else                 
+                 Expect.equal list []                
         ]
 
 [<Tests>]
