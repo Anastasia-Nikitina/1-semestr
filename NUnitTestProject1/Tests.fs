@@ -23,9 +23,14 @@ let PropertyTestsForLists =
             let lst = List.filter (fun x -> x <> 0) list
             if not lst.IsEmpty
             then
-                Expect.equal (MyList.Fold (fun x y -> x / y) 0 (TransformToMyList (lst)))  (List.fold (fun x y -> x / y) 0 lst)
+                let expected = List.fold (fun x y -> x / y) lst.Head lst.Tail
+                let res =
+                    match TransformToMyList lst with
+                    | Cons (head, tail) -> MyList.Fold (fun x y -> x / y) head tail
+                    | Single x -> x
+                Expect.equal res expected
             else
-                Expect.sequenceEqual list []
+                Expect.sequenceEqual lst []
          testProperty "Comparision my getLength with system getLength" <| fun (list: list<int>) ->
             if not list.IsEmpty
             then
