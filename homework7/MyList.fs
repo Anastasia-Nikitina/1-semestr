@@ -40,6 +40,11 @@ let rec TransformToSystemList list =
     | Single x -> [x]
     | Cons (head, tail) -> head :: TransformToSystemList tail
 
+let Head list =
+    match list with
+    | Single x -> x
+    | Cons(head, tail) -> head
+
 let Sort list =
     let rec go1 list1 =
         match list1 with
