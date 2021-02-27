@@ -6,15 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="вывод.txt" />
-    <Content Include="ввод.txt" />
     <Compile Include="matrices.fs" />
-    <Compile Include="long arithmetic.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
 
+  <ItemGroup />
+
   <ItemGroup>
-    <ProjectReference Include="..\homework4\homework4.fsproj" />
     <ProjectReference Include="..\homework7\homework7.fsproj" />
   </ItemGroup>
 
