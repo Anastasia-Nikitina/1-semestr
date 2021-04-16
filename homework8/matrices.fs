@@ -98,8 +98,8 @@ let rec goAdd (m1: QuadTree<int>) (m2: QuadTree<int>) (algStr: SemiRing<int>) =
         let SW = goAdd three_1 three_2 algStr
         let SE = goAdd four_1 four_2 algStr
         mergeNone(NW, NE, SW, SE)
-    |(Node(_, _, _, _), _) -> failwith "Incorrected"
-    |(Leaf _, _) -> failwith "Incorrected"
+    |(Node(_, _, _, _), _) |(Leaf _, _)  -> failwith "Incorrected"
+    
 
 let add (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =   
     if m1.lines = m2.lines && m1.colomns = m2.colomns
@@ -120,8 +120,7 @@ let mult (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =
             let SW = goAdd (goMult a3 b1 algStr) (goMult a4 b3 algStr) algStr
             let SE = goAdd (goMult a3 b2 algStr) (goMult a4 b4 algStr) algStr
             mergeNone(NW, NE, SW, SE)
-        |(_, Node(_, _, _, _)) -> failwith "Incorrected"
-        |(_, Leaf _) -> failwith "Incorrected"
+        |(_, Node(_, _, _, _)) |(_, Leaf _) -> failwith "Incorrected"
     if m1.colomns = m2.lines
     then QTwithSize (goMult m1.qt m2.qt algStr, m1.lines, m2.colomns)
     else failwith "matrices can not be mult"
@@ -145,14 +144,13 @@ let rec numberToMatrix (n: int) (m: QuadTree<int>) (algStr: SemiRing<int>) =
 let tensorMult (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =
    let rec go (m1: QuadTree<int>) (m2: QuadTree<int>) =
         match (m1, m2) with       
-        |(Leaf x, Node(a, b, c, d)) -> Node (numberToMatrix x a algStr, numberToMatrix x b algStr, numberToMatrix x c algStr, numberToMatrix x d algStr)
-        |(Node(a, b, c, d), Leaf x) -> Node (numberToMatrix x a algStr, numberToMatrix x b algStr, numberToMatrix x c algStr, numberToMatrix x d algStr)
+        |(Node(a, b, c, d), Leaf x) |(Leaf x, Node(a, b, c, d)) -> Node (numberToMatrix x a algStr, numberToMatrix x b algStr, numberToMatrix x c algStr, numberToMatrix x d algStr)
         |(Node(a, b, c, d), Node(x, y, z, w)) ->
             let NW = go a (Node(x, y, z, w))
             let NE = go b (Node(x, y, z, w))
             let SW = go c (Node(x, y, z, w))
             let SE = go d (Node(x, y, z, w))
             mergeNone(NW, NE, SW, SE)
-        |(a, None) -> None
-        |(None, a) -> None   
+        |(a, None)|(None, a) -> None
+        |(_, Leaf(_)) -> failwith "Incorrected"
    QTwithSize (go m1.qt m2.qt, (m1.lines * m2.lines), (m1.colomns * m2.colomns))

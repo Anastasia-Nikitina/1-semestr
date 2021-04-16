@@ -8,7 +8,7 @@ let genRandomArray  =
     let a = Array2D.zeroCreate 2 2
     for i = 0 to 1 do
         for j = 0 to 1 do
-          a.[i, j] <- (new System.Random()).Next (-20, 20)
+          a.[i, j] <- (new System.Random()).Next (-10, 10)
     a
 
 let multArr (a: int [,]) (b: int [,]) =
@@ -41,7 +41,7 @@ let tensorMultArr (a: int [,]) (b: int [,]) =
     for i = 0 to m1 - 1 do
         for k = 0 to n1 - 1 do
             for j = 0 to m2 - 1 do
-                for l = 0 to n2-1 do
+                for l = 0 to n2 - 1 do
                     res.[m2*i + j, n2*k + l] <- a.[i, k] * b.[j, l]
     res
     
