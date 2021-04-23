@@ -2,10 +2,12 @@ module matrices
 open System.IO
 
 type SemiRing<'t> =
-    val Neitral: 't
-    val Add: 't -> 't -> 't   
-    val Mult: 't -> 't -> 't
-    new (n, x, y) = {Neitral = n; Add = x; Mult = y}
+    struct
+        val Neitral: 't
+        val Add: 't -> 't -> 't   
+        val Mult: 't -> 't -> 't
+        new (n, x, y) = {Neitral = n; Add = x; Mult = y}
+    end
 
 type QuadTree<'t> =    
     | None
@@ -13,14 +15,21 @@ type QuadTree<'t> =
     | Node of QuadTree<'t> * QuadTree<'t> * QuadTree<'t> * QuadTree<'t>
     
 type QTwithSize =
-    val qt: QuadTree<int>
-    val lines: int
-    val colomns: int
-    new (qt, a, b)  = {qt = qt; lines = a; colomns = b}
-    
+    struct
+        val qt: QuadTree<int>
+        val lines: int
+        val colomns: int
+        new (qt, a, b)  = {qt = qt; lines = a; colomns = b} 
+    end
+
 let Size (m: int [,])  =
     let x = m.GetLength(1) * m.GetLength(0)
     x
+
+let mergeNone (NW, NE, SW, SE) =
+    if (NW, NE, SW, SE) = (None, None, None, None)
+    then None
+    else Node(NW, NE, SW, SE)
 
 let TransformToQTwithSize (m: int [,]) g h =
     let rec go (m: int [,]) = 
@@ -32,26 +41,13 @@ let TransformToQTwithSize (m: int [,]) g h =
             then None
             else Leaf (m.[0, 0])
         else
-            let x = m.GetLength(0) / 2
-            let NW = Array2D.zeroCreate x x
-            let NE = Array2D.zeroCreate x x        
-            let SW = Array2D.zeroCreate x x        
-            let SE = Array2D.zeroCreate x x        
-            for i = 0 to m.GetLength(0) / 2 - 1 do
-                for j = 0 to m.GetLength(0) / 2 - 1 do             
-                    NW.[i, j] <- m.[i, j]
-            for i = 0 to m.GetLength(0) / 2 - 1  do 
-                for j = m.GetLength(0) / 2 to m.GetLength(0) - 1  do                
-                    NE.[i, j - m.GetLength(0) / 2] <- m.[i, j]
-            for i = m.GetLength(0) / 2 to m.GetLength(0) - 1  do
-                for j = 0 to m.GetLength(0) / 2 - 1 do               
-                    SW.[i - m.GetLength(0) / 2 , j] <- m.[i, j]
-            for i = m.GetLength(0) / 2 to m.GetLength(0) - 1 do
-                for j = m.GetLength(0) / 2 to m.GetLength(0) - 1 do                
-                    SE.[i - m.GetLength(0) / 2, j - m.GetLength(0) / 2] <- m.[i, j]            
-            Node (go NW, go NE, go SW, go SE)
-    QTwithSize (go m, g, h)   
-
+           let NW = go m.[0 .. m.GetLength(0) / 2 - 1, 0 .. m.GetLength(0) / 2 - 1]
+           let NE = go m.[0 .. m.GetLength(0) / 2 - 1,  m.GetLength(0) / 2 .. m.GetLength(0) - 1]
+           let SW = go m.[m.GetLength(0) / 2 .. m.GetLength(0) - 1, 0 .. m.GetLength(0) / 2 - 1]
+           let SE = go m.[m.GetLength(0) / 2 .. m.GetLength(0) - 1, m.GetLength(0) / 2 .. m.GetLength(0) - 1]
+           mergeNone (NW, NE, SW, SE)                                
+    QTwithSize (go m, g, h)
+    
 let readAndExtension file =   
     let m = File.ReadAllLines file
     let x = m.Length
@@ -79,11 +75,6 @@ let readAndExtension file =
                 arr.[i / y, i % y] <- int numbers.[i] 
         TransformToQTwithSize arr x y
 
-let mergeNone (NW, NE, SW, SE) =
-    if (NW, NE, SW, SE) = (None, None, None, None)
-    then None
-    else Node(NW, NE, SW, SE)
-
 let rec goAdd (m1: QuadTree<int>) (m2: QuadTree<int>) (algStr: SemiRing<int>) =
     match (m1, m2) with
     |(a, None) -> a
@@ -100,7 +91,6 @@ let rec goAdd (m1: QuadTree<int>) (m2: QuadTree<int>) (algStr: SemiRing<int>) =
         mergeNone(NW, NE, SW, SE)
     |(Node(_, _, _, _), _) |(Leaf _, _)  -> failwith "Incorrected"
     
-
 let add (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =   
     if m1.lines = m2.lines && m1.colomns = m2.colomns
     then QTwithSize (goAdd m1.qt m2.qt algStr, m1.lines, m1.colomns)
