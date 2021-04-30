@@ -4,12 +4,13 @@ open Expecto
 
 let semiRing = SemiRing<int>(0, (+), (*))
 
-let genRandomArray m  =
-    let rand = (new System.Random()).Next (-10, 10)
+let rand = new System.Random()
+
+let genRandomArray m  =    
     let a = Array2D.zeroCreate m m
     for i = 0 to a.GetLength 0 - 1 do
         for j = 0 to a.GetLength 1 - 1  do
-          a.[i, j] <- rand
+          a.[i, j] <- rand.Next (-10, 10)
     a
 
 let multArr (a: int [,]) (b: int [,]) =
@@ -67,9 +68,9 @@ let PropertyTests =
              let res = mult m1 m2 semiRing
              Expect.equal res expect
 
-         testProperty  "Comparision tensor mult QT with tensor mult arrays" <| fun (m: int)->             
-             let arr1 = genRandomArray (abs m + 1)            
-             let arr2 = genRandomArray (abs m + 1)             
+         testProperty  "Comparision tensor mult QT with tensor mult arrays" <| fun _ ->            
+             let arr1 = genRandomArray 4        
+             let arr2 = genRandomArray 4         
              let x = (arr1.GetLength 0)*(arr2.GetLength 1)     
              let m1 = extQT arr1     
              let m2 = extQT arr2    
