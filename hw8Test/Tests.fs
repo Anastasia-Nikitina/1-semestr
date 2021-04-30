@@ -51,8 +51,8 @@ let tensorMultArr (a: int [,]) (b: int [,]) =
 let PropertyTests =
     testList "Property tests"
         [testProperty "Comparision add QT with add arrays" <| fun (m: int)  ->
-             let arr1 = genRandomArray (abs m + 1)    
-             let arr2 = genRandomArray (abs m + 1)
+             let arr1 = genRandomArray (abs m + 1)  
+             let arr2 = genRandomArray (abs m + 1)  
              let m1 = TransformToQTwithSize arr1 (arr1.GetLength 0) (arr1.GetLength 1)
              let m2 = TransformToQTwithSize arr2 (arr2.GetLength 0) (arr2.GetLength 1)
              let expect = TransformToQTwithSize (addArr arr1 arr2) (arr1.GetLength 0) (arr1.GetLength 1)
@@ -68,9 +68,9 @@ let PropertyTests =
              let res = mult m1 m2 semiRing
              Expect.equal res expect
 
-         testProperty  "Comparision tensor mult QT with tensor mult arrays" <| fun _ ->            
-             let arr1 = genRandomArray 4        
-             let arr2 = genRandomArray 4         
+         testProperty  "Comparision tensor mult QT with tensor mult arrays" <| fun (m: int) ->            
+             let arr1 = genRandomArray (abs m + 1)          
+             let arr2 = genRandomArray (abs m + 1)           
              let x = (arr1.GetLength 0)*(arr2.GetLength 1)     
              let m1 = extQT arr1     
              let m2 = extQT arr2    
