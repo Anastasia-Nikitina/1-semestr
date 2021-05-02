@@ -103,7 +103,7 @@ let rec goAdd (m1: QuadTree<int>) (m2: QuadTree<int>) (algStr: SemiRing<int>) =
         let SW = goAdd three_1 three_2 algStr
         let SE = goAdd four_1 four_2 algStr
         mergeNone(NW, NE, SW, SE)
-    |(Node(_, _, _, _), _) |(Leaf _, _)  -> failwith "Incorrected"
+    |(Node(_, _, _, _), _) |(Leaf _, _)  -> failwith "Incorrect"
     
 let add (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =   
     if m1.lines = m2.lines && m1.colomns = m2.colomns
@@ -111,8 +111,7 @@ let add (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =
     else failwith "matrices can not be add"
 
 let mult (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =
-    let rec goMult (m1: QuadTree<int>) (m2: QuadTree<int>) (algStr: SemiRing<int>) =
-        
+    let rec goMult (m1: QuadTree<int>) (m2: QuadTree<int>) (algStr: SemiRing<int>) =       
         match (m1, m2) with
         |(Leaf a, Leaf b) ->
             if algStr.Mult a b = algStr.Neitral
