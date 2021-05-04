@@ -3,4 +3,4 @@ open matrices
 
 [<EntryPoint>]
 let main(argv: array<string>) =
-  0
+ 0

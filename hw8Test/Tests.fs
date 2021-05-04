@@ -53,9 +53,9 @@ let PropertyTests =
         [testProperty "Comparision add QT with add arrays" <| fun m  ->
              let arr1 = genRandomArray (abs m + 1)  
              let arr2 = genRandomArray (abs m + 1)  
-             let m1 = TransformToQTwithSize arr1 (arr1.GetLength 0) (arr1.GetLength 1)
-             let m2 = TransformToQTwithSize arr2 (arr2.GetLength 0) (arr2.GetLength 1)
-             let expect = TransformToQTwithSize (addArr arr1 arr2) (arr1.GetLength 0) (arr1.GetLength 1)
+             let m1 = extQT arr1
+             let m2 = extQT arr2
+             let expect = TransformToQTwithSize (addArr (extArr arr1) (extArr arr2)) (arr1.GetLength 0) (arr1.GetLength 1)
              let res = add m1 m2 semiRing
              Expect.equal res expect            
          testProperty "Comparision mult QT with mult arrays" <| fun (m: int) _ ->
