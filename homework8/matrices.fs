@@ -1,5 +1,6 @@
 module matrices
 open System.IO
+open System.Threading.Tasks
 
 [<Struct>]
 type SemiRing<'t> =  
@@ -110,7 +111,7 @@ let add (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =
     then QTwithSize (goAdd m1.qt m2.qt algStr, m1.lines, m1.colomns)
     else failwith "matrices can not be add"
 
-let mult (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =
+let QTmult (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =
     let rec goMult (m1: QuadTree<int>) (m2: QuadTree<int>) (algStr: SemiRing<int>) =       
         match (m1, m2) with
         |(Leaf a, Leaf b) ->
@@ -158,3 +159,33 @@ let tensorMult1 (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) =
             mergeNone(NW, NE, SW, SE)
         |(a, None)|(None, a) -> None  
    QTwithSize (go m1.qt m2.qt, (m1.lines * m2.lines), (m1.colomns * m2.colomns))
+
+let QTmultParallel (m1: QTwithSize) (m2: QTwithSize) (algStr: SemiRing<int>) p =
+    let rec goMult (m1: QuadTree<int>) (m2: QuadTree<int>) (algStr: SemiRing<int>) c =
+        match (m1, m2) with
+        |(Leaf a, Leaf b) ->
+            if algStr.Mult a b = algStr.Neitral
+            then None
+            else Leaf (algStr.Mult a b)
+        |(_, None) -> None |(None, _) -> None
+        |(Node(a1, a2, a3, a4), Node(b1, b2, b3, b4)) ->
+            if c < p
+            then
+                let help x y z w = goAdd (goMult x y algStr (c + 1)) (goMult z w algStr (c + 1)) algStr 
+                let NW = async {return help a1 b1 a2 b3}
+                let NE = async {return help a1 b2 a2 b4}
+                let SW = async {return help a3 b1 a4 b3}
+                let SE = async {return help a3 b2 a4 b4}
+                let s = [NW; NE; SW; SE] |> Async.Parallel |> Async.RunSynchronously
+                mergeNone(s.[1], s.[2], s.[3], s.[4])
+            else
+                let help x y z w = goAdd (goMult x y algStr 1000) (goMult z w algStr 1000) algStr 
+                let NW = help a1 b1 a2 b3
+                let NE = help a1 b2 a2 b4
+                let SW = help a3 b1 a4 b3
+                let SE = help a3 b2 a4 b4
+                mergeNone(NW, NE, SW, SE)
+        |(_, Node(_, _, _, _)) |(_, Leaf _) -> failwith "Incorrected"
+    if m1.colomns = m2.lines
+    then QTwithSize (goMult m1.qt m2.qt algStr p, m1.lines, m2.colomns)
+    else failwith "matrices can not be mult"

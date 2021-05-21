@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\homework8\homework8.fsproj" />
+    <ProjectReference Include="..\homework8\QuadTree.fsproj" />
   </ItemGroup>
 
 </Project>
