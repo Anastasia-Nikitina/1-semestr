@@ -1,10 +1,9 @@
-
 open System
 open code
 open Argu
 type CLIArguments =
-    |MultAllMatrices of inDir: string
-    |MultSomeMatrices of inDir: string * n: int
+    | MultAllMatrices of inDir: string
+    | MultSomeMatrices of inDir: string * n: int
     interface IArgParserTemplate with
         member s.Usage =
             match s with
