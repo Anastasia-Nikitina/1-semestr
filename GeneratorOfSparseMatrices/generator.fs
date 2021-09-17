@@ -34,4 +34,3 @@ let genSparseMatrix<'t> (path: string) size quant (sparse: float) =
                    m.[i, j] <- "0"
                res.[i] <- res.[i] + m.[i, j] + " "
         System.IO.File.WriteAllLines(path + string l, res)
-       

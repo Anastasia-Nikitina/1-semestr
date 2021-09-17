@@ -54,7 +54,7 @@ let array2DIntoString (array: int[,]) =
     let stringArr: string [] = Array.zeroCreate (array.GetLength 0) 
     for i = 0 to (array.GetLength 0 - 1) do
         for j = 0 to (array.GetLength 1 - 1) do
-            stringArr.[i] <- stringArr.[i] + string array.[i, j]
+            stringArr.[i] <- stringArr.[i] + string array.[i, j] + " "
     stringArr
 
 let writeArray2D file (array: int[,]) =
