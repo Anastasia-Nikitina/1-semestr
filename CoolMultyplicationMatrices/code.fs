@@ -3,10 +3,18 @@ open matrices
 open helper
 
 let semiRing = SemiRing<int>(0, (+), (*))
-
+    
 let listAllFiles dir =
     let files = System.IO.Directory.GetFiles(dir)
     List.ofArray files
+
+[<Struct>] 
+type cnst =
+    val sparsity: float
+    val size: int
+    val algStr: SemiRing<int>
+    val par: int
+    new(a, b, s, p) = {sparsity = a; size = b; algStr = s; par = p}
 
 [<Struct>]    
 type PairOfMatrices =
@@ -19,36 +27,29 @@ type PairOfMatrices =
         new (f1, f2, m1, m2, a, b)  = {path1 = f1; path2 = f2; m1 = m1; m2 = m2; isBig = a; isSparse = b} 
 
 type msgBalancer =
-    | EOSb of AsyncReplyChannel<unit>
+    | EOS of AsyncReplyChannel<unit>
     | Matrices of PairOfMatrices
 
 type msgLoader =
-    | EOSl of AsyncReplyChannel<unit> 
+    | EOS of AsyncReplyChannel<unit> 
     | Go of AsyncReplyChannel<unit>
-
-type msgMult =
-    | CommonSeq of PairOfMatrices
-    | CommonPar of PairOfMatrices
-    | QTseq of PairOfMatrices
-    | QTpar of PairOfMatrices
-    | EOSm of AsyncReplyChannel<unit>
-  
+ 
 let mtrxLoader inDir (mtrxBalancer: MailboxProcessor<msgBalancer>) quant =
     MailboxProcessor.Start(fun inbox ->
         let rec loop files n =
             async{
-                let! msg = inbox.Receive()
+                let! (msg: msgLoader) = inbox.Receive()
                 match msg with
-                | EOSl ch ->
+                | msgLoader.EOS ch ->
                     printfn "Matrix loader is ready to finish!"
-                    mtrxBalancer.PostAndReply (fun ch -> EOSb ch)
+                    mtrxBalancer.PostAndReply msgBalancer.EOS
                     printfn "Matrix loader is finished!"
                     ch.Reply()
                 | Go ch ->
                     match files with
                     | [] ->
                         printfn "Matrix reading is finished!"
-                        inbox.Post (EOSl ch)
+                        inbox.Post (msgLoader.EOS ch)
                         return! loop files n
                     | file1 :: file2 :: files ->
                         if n > 0
@@ -60,25 +61,25 @@ let mtrxLoader inDir (mtrxBalancer: MailboxProcessor<msgBalancer>) quant =
                             return! loop files (n - 1)
                         else
                             printfn "Matrix reading is finished!"
-                            inbox.Post (EOSl ch)
+                            inbox.Post (msgLoader.EOS ch)
                             return! loop files (n - 1)
                     | [_] -> printfn "Error"                    
             }
         loop (listAllFiles inDir) quant
         )
 
-let mtrxBalancer (commonMult: MailboxProcessor<msgMult>) (commonMultPar: MailboxProcessor<msgMult>) (qMult: MailboxProcessor<msgMult>) (qMultPar: MailboxProcessor<msgMult>)=
+let mtrxBalancer (k: cnst) (commonMult: MailboxProcessor<msgBalancer>) (commonMultPar: MailboxProcessor<msgBalancer>) (qMult: MailboxProcessor<msgBalancer>) (qMultPar: MailboxProcessor<msgBalancer>)=
     MailboxProcessor.Start(fun inbox ->
         let rec loop () =
             async{
                 let! msg = inbox.Receive()
                 match msg with
-                | EOSb ch ->
+                | msgBalancer.EOS ch ->
                     printfn "Balancer is ready to finish!"
-                    commonMult.PostAndReply (fun ch -> EOSm ch)
-                    commonMultPar.PostAndReply (fun ch -> EOSm ch)
-                    qMult.PostAndReply (fun ch -> EOSm ch)
-                    qMultPar.PostAndReply (fun ch -> EOSm ch)
+                    commonMult.PostAndReply (fun ch ->  msgBalancer.EOS ch)
+                    commonMultPar.PostAndReply (fun ch ->  msgBalancer.EOS ch)
+                    qMult.PostAndReply (fun ch ->  msgBalancer.EOS ch)
+                    qMultPar.PostAndReply (fun ch ->  msgBalancer.EOS ch)
                     printfn "Matrix balancer is finished!"
                     ch.Reply()
                 | Matrices(pair) ->                                    
@@ -87,56 +88,67 @@ let mtrxBalancer (commonMult: MailboxProcessor<msgMult>) (commonMultPar: Mailbox
                     let b1 = pair.m1.GetLength(0)
                     let b2 = pair.m2.GetLength(0)
                     printfn "Processing %A and %A" pair.path1 pair.path2
-                    if (s1 < 0.3 || s2 < 0.3) && (b1 > 1000 || b2 > 1000) 
-                    then qMult.Post (QTpar (PairOfMatrices (pair.path1, pair.path2, pair.m1, pair.m2, true, true)))
-                    elif (s1 < 0.3 || s2 < 0.3) && (b1 <= 1000 && b2 <= 1000)
-                    then qMult.Post (QTseq (PairOfMatrices (pair.path1, pair.path2, pair.m1, pair.m2, true, false)))
-                    elif (s1 >= 0.3 && s2 >= 0.3) && (b1 > 1000 || b2 > 1000)
-                    then commonMult.Post (CommonPar (PairOfMatrices (pair.path1, pair.path2, pair.m1, pair.m2, false, true)))
-                    else commonMult.Post (CommonSeq (PairOfMatrices (pair.path1, pair.path2, pair.m1, pair.m2, false, false)))
+                    if (s1 < k.sparsity || s2 < k.sparsity) && (b1 > k.size || b2 > k.size) 
+                    then qMult.Post (Matrices (PairOfMatrices (pair.path1, pair.path2, pair.m1, pair.m2, true, true)))
+                    elif (s1 < k.sparsity || s2 < k.sparsity) && (b1 <= k.size && b2 <=k.size)
+                    then qMult.Post (Matrices (PairOfMatrices (pair.path1, pair.path2, pair.m1, pair.m2, true, false)))
+                    elif (s1 >= k.sparsity && s2 >= k.sparsity) && (b1 > k.size || b2 > k.size)
+                    then commonMult.Post (Matrices (PairOfMatrices (pair.path1, pair.path2, pair.m1, pair.m2, false, true)))
+                    else commonMult.Post (Matrices (PairOfMatrices (pair.path1, pair.path2, pair.m1, pair.m2, false, false)))
                     return! loop ()
                  }
         loop () 
         )
 
-let mult =
+let QTmultSeqFix m1 m2 s n =
+    QTmult m1 m2 s
+
+let Qmult multfun s n (prnt: string) =
+    MailboxProcessor.Start(fun inbox ->
+           let rec loop () =
+               async{
+                   let! (msg: msgBalancer) = inbox.Receive()
+                   match msg with
+                   | msgBalancer.EOS ch ->
+                       printfn "Mult is finished!"
+                       ch.Reply()
+                       return! loop ()
+                   | Matrices pair  ->
+                       printfn "%A" prnt
+                       let res = multfun (extQT pair.m1) (extQT pair.m2) s n
+                       return! loop ()
+                   }
+           loop ()
+           )
+       
+let ArrMult multfun (prnt: string) =
     MailboxProcessor.Start(fun inbox ->
         let rec loop () =
             async{
-                let! (msg: msgMult) = inbox.Receive()
+                let! (msg: msgBalancer) = inbox.Receive()
                 match msg with
-                | EOSm ch ->
+                | msgBalancer.EOS ch ->
                     printfn "Mult is finished!"
                     ch.Reply()
                     return! loop ()
-                | QTpar p ->
-                    printfn "Parallel QT mult"
-                    let res =  QTmultParallel (extQT p.m1) (extQT p.m2)   
-                    return! loop ()
-                | QTseq p ->
-                    printfn "Sequence QT mult"
-                    let res = QTmult (extQT p.m1) (extQT p.m2)    
-                    return! loop ()
-                | CommonSeq p ->
-                    printfn "Sequence arr mult"
-                    let res = multMatrix  p.m1 p.m2    
-                    return! loop ()
-                | CommonPar p ->
-                    printfn "Parallel arr mult"
-                    let res = multMatrixPar p.m1 p.m2  
-                    return! loop ()                   
+                | Matrices p ->
+                    printfn "%A" prnt
+                    let res =  multfun p.m1 p.m2
+                    return! loop ()        
                 }
         loop ()
         )
 
-let processSomeFilesAsync inDir n =
-    let (commonMultSeq, commonMultPar, qMultSeq, qMultPar) = (mult, mult, mult, mult)
-    let mtrxBalancer = mtrxBalancer commonMultSeq commonMultPar qMultSeq qMultPar
-    let mtrxLoader = mtrxLoader inDir mtrxBalancer n
-    mtrxLoader.PostAndReply(fun ch -> Go ch)
+let processSomeFilesAsync inDir (k: cnst) =
+    let (commonMultSeq, commonMultPar) = (ArrMult multMatrix "Sequence array mult", ArrMult multMatrixPar "Parallel array mult")
+    let (qMultSeq, qMultPar) = (Qmult QTmultSeqFix k.algStr k.par "Parallel QT mult", Qmult QTmultParallel k.algStr k.par "Parallel QT mult")
+    let mtrxBalancer = mtrxBalancer k commonMultSeq commonMultPar qMultSeq qMultPar
+    let mtrxLoader = mtrxLoader inDir mtrxBalancer k.par
+    mtrxLoader.PostAndReply Go
 
-let processAllFilesAsync inDir =
-    let (commonMultSeq, commonMultPar, qMultSeq, qMultPar) = (mult, mult, mult, mult)
-    let mtrxBalancer = mtrxBalancer commonMultSeq commonMultPar qMultSeq qMultPar
+let processAllFilesAsync inDir (k: cnst) =
+    let (commonMultSeq, commonMultPar) = (ArrMult multMatrix "Sequence array mult", ArrMult multMatrixPar "Parallel array mult")
+    let (qMultSeq, qMultPar) = (Qmult QTmultSeqFix  k.algStr k.par "Parallel QT mult", Qmult QTmultParallel k.algStr k.par "Parallel QT mult")
+    let mtrxBalancer = mtrxBalancer k commonMultSeq commonMultPar qMultSeq qMultPar
     let mtrxLoader = mtrxLoader inDir mtrxBalancer (((listAllFiles inDir).Length) / 2)
-    mtrxLoader.PostAndReply(fun ch -> Go ch)
+    mtrxLoader.PostAndReply Go
