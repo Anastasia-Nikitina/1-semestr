@@ -7,14 +7,13 @@ let semiRing = SemiRing<int>(0, (+), (*))
 let listAllFiles dir =
     let files = System.IO.Directory.GetFiles(dir)
     List.ofArray files
-
-[<Struct>] 
-type cnst =
+ 
+type cnst<'t> =
     val sparsity: float
     val size: int
-    val algStr: SemiRing<int>
+    val algStr: SemiRing<'t>
     val par: int
-    new(a, b, s, p) = {sparsity = a; size = b; algStr = s; par = p}
+    new(a, b, s, p) = {sparsity = a; size = b; algStr = s; par = p }
 
 [<Struct>]    
 type PairOfMatrices =
@@ -34,7 +33,7 @@ type msgLoader =
     | EOS of AsyncReplyChannel<unit> 
     | Go of AsyncReplyChannel<unit>
  
-let mtrxLoader inDir (mtrxBalancer: MailboxProcessor<msgBalancer>) quant =
+let mtrxLoader inDir (mtrxBalancer: MailboxProcessor<msgBalancer>) count =
     MailboxProcessor.Start(fun inbox ->
         let rec loop files n =
             async{
@@ -65,10 +64,10 @@ let mtrxLoader inDir (mtrxBalancer: MailboxProcessor<msgBalancer>) quant =
                             return! loop files (n - 1)
                     | [_] -> printfn "Error"                    
             }
-        loop (listAllFiles inDir) quant
+        loop (listAllFiles inDir) count
         )
 
-let mtrxBalancer (k: cnst) (commonMult: MailboxProcessor<msgBalancer>) (commonMultPar: MailboxProcessor<msgBalancer>) (qMult: MailboxProcessor<msgBalancer>) (qMultPar: MailboxProcessor<msgBalancer>)=
+let mtrxBalancer (k: cnst<'t>) (commonMult: MailboxProcessor<msgBalancer>) (commonMultPar: MailboxProcessor<msgBalancer>) (qMult: MailboxProcessor<msgBalancer>) (qMultPar: MailboxProcessor<msgBalancer>)=
     MailboxProcessor.Start(fun inbox ->
         let rec loop () =
             async{
@@ -100,10 +99,10 @@ let mtrxBalancer (k: cnst) (commonMult: MailboxProcessor<msgBalancer>) (commonMu
         loop () 
         )
 
-let QTmultSeqFix m1 m2 s n =
-    QTmult m1 m2 s
+let QTmultSeqFix m1 m2 str n =
+    QTmult m1 m2 str
 
-let Qmult multfun s n (prnt: string) =
+let Qmult multfun (k: cnst<'t>) (prnt: string) =
     MailboxProcessor.Start(fun inbox ->
            let rec loop () =
                async{
@@ -115,7 +114,7 @@ let Qmult multfun s n (prnt: string) =
                        return! loop ()
                    | Matrices pair  ->
                        printfn "%A" prnt
-                       let res = multfun (extQT pair.m1) (extQT pair.m2) s n
+                       let res = multfun (extQT pair.m1) (extQT pair.m2) k.algStr k.par
                        return! loop ()
                    }
            loop ()
@@ -139,16 +138,18 @@ let ArrMult multfun (prnt: string) =
         loop ()
         )
 
-let processSomeFilesAsync inDir (k: cnst) =
+let fixConst = cnst(0.5, 1000, semiRing, 1)
+
+let processSomeFilesAsync k inDir  count =
     let (commonMultSeq, commonMultPar) = (ArrMult multMatrix "Sequence array mult", ArrMult multMatrixPar "Parallel array mult")
-    let (qMultSeq, qMultPar) = (Qmult QTmultSeqFix k.algStr k.par "Parallel QT mult", Qmult QTmultParallel k.algStr k.par "Parallel QT mult")
+    let (qMultSeq, qMultPar) = (Qmult QTmultSeqFix k "Parallel QT mult", Qmult QTmultParallel k "Parallel QT mult")
     let mtrxBalancer = mtrxBalancer k commonMultSeq commonMultPar qMultSeq qMultPar
-    let mtrxLoader = mtrxLoader inDir mtrxBalancer k.par
+    let mtrxLoader = mtrxLoader inDir mtrxBalancer count
     mtrxLoader.PostAndReply Go
 
-let processAllFilesAsync inDir (k: cnst) =
+let processAllFilesAsync k inDir  =
     let (commonMultSeq, commonMultPar) = (ArrMult multMatrix "Sequence array mult", ArrMult multMatrixPar "Parallel array mult")
-    let (qMultSeq, qMultPar) = (Qmult QTmultSeqFix  k.algStr k.par "Parallel QT mult", Qmult QTmultParallel k.algStr k.par "Parallel QT mult")
+    let (qMultSeq, qMultPar) = (Qmult QTmultSeqFix  k "Parallel QT mult", Qmult QTmultParallel k "Parallel QT mult")
     let mtrxBalancer = mtrxBalancer k commonMultSeq commonMultPar qMultSeq qMultPar
     let mtrxLoader = mtrxLoader inDir mtrxBalancer (((listAllFiles inDir).Length) / 2)
     mtrxLoader.PostAndReply Go

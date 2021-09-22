@@ -2,8 +2,8 @@ open System
 open code
 open Argu
 type CLIArguments =
-    | MultAllMatrices of inDir: string
-    | MultSomeMatrices of inDir: string * n: int
+    | MultAllMatrices of inDir: string 
+    | MultSomeMatrices of inDir: string * count: int
     interface IArgParserTemplate with
         member s.Usage =
             match s with
@@ -19,11 +19,11 @@ let main (argv: string array) =
         if args.Contains(MultAllMatrices)
         then
             let inDir = args.GetResult(MultAllMatrices)
-            processAllFilesAsync inDir
+            processAllFilesAsync fixConst inDir
         elif args.Contains(MultSomeMatrices)
         then
-            let inDir, quant = args.GetResult(MultSomeMatrices)
-            processSomeFilesAsync inDir quant        
+            let inDir, count = args.GetResult(MultSomeMatrices)
+            processSomeFilesAsync fixConst inDir count 
         else printfn "Input is incorrected"
         0
     with
