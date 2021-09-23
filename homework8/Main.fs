@@ -24,6 +24,4 @@ let main(argv: array<string>) =
   let par = QTmultParallel m1 m2 semiRing 2   
   printfn "%A" seq.qt
   printfn "%A" par.qt
-
-
   0
