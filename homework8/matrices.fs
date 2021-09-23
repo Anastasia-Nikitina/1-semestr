@@ -77,7 +77,7 @@ let multMatrix (a: int [,]) (b: int [,]) =
     else failwith "Size of matrices is not correct"
 
 let multMatrixPar (m1: int[,]) (m2: int[,]) =
-    if (m1.GetLength 1 = m2.GetLength 0) then
+    if m1.GetLength 1 = m2.GetLength 0 then
         let a = m1.GetLength 0
         let b = m1.GetLength 1
         let c = m2.GetLength 1
@@ -106,7 +106,7 @@ let extArr (a: int [,]) =
         size <- size / 2   
     if size = 1
     then
-        let (arr: int[,])= Array2D.zeroCreate (max x y) (max x y)
+        let (arr: int[,]) = Array2D.zeroCreate (max x y) (max x y)
         for i = 0 to a.GetLength 0 - 1 do
             for j = 0 to a.GetLength 1 - 1 do
                 arr.[i, j] <-  a.[i, j] 
