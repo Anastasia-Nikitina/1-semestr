@@ -19,11 +19,11 @@ let main (argv: string array) =
         if args.Contains(MultAllMatrices)
         then
             let inDir = args.GetResult(MultAllMatrices)
-            processAllFilesAsync fixParameters inDir
+            processFilesAsync fixParameters inDir (((listFiles inDir).Length) / 2)
         elif args.Contains(MultSomeMatrices)
         then
             let inDir, count = args.GetResult(MultSomeMatrices)
-            processSomeFilesAsync fixParameters inDir count 
+            processFilesAsync fixParameters inDir count 
         else printfn "Input is incorrected"
         0
     with

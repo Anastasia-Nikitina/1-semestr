@@ -2,7 +2,7 @@
   "profiles": {
     "CoolMultyplicationMatrices": {
       "commandName": "Project",
-      "commandLineArgs": "--multsomematrices C:/homework12/matrices 2"
+      "commandLineArgs": "--multallmatrices C:/homework12/matrices"
     }
   }
 }
