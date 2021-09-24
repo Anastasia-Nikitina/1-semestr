@@ -54,15 +54,48 @@ let read file =
     for i = 1 to m.Length - 1 do
         str <- str + " " + m.[i]
     let numbers = str.Split(' ')    
-    let arr = Array2D.zeroCreate x (numbers.Length / x)
+    let y = (numbers.Length - x) / x    
+    let arr = Array2D.zeroCreate x y 
     let mutable k = 0
     for i = 0 to x - 1 do
-        for j = 0 to (numbers.Length / x) - 1 do           
-            arr.[i, j] <- int (numbers.[k])
-            printfn "%A" arr.[i, j]
-            k <- k + 1   
+        for j = 0 to y - 1 do           
+            if numbers.[k] = ""
+            then k <- k + 1                       
+            arr.[i, j] <- int (numbers.[k])          
+            k <- k + 1
     arr
 
+let multMatrix (a: int [,]) (b: int [,]) =
+    if a.GetLength 0 = b.GetLength 1
+    then
+      let res = Array2D.zeroCreate (a.GetLength 0) (b.GetLength 1)
+      for i = 0 to (a.GetLength 0 - 1) do
+        for j = 0 to (b.GetLength 1 - 1) do
+          for l = 0 to (a.GetLength 1 - 1) do
+            res.[i, j] <- res.[i, j] + a.[i, l]*b.[l, j]
+      res
+    else failwith "Size of matrices is not correct"
+
+let multMatrixPar (m1: int[,]) (m2: int[,]) =
+    if m1.GetLength 1 = m2.GetLength 0 then
+        let a = m1.GetLength 0
+        let b = m1.GetLength 1
+        let c = m2.GetLength 1
+        let res = Array2D.zeroCreate a c
+        [ for i in 0 .. a - 1 ->
+            async {
+                do
+                    for j in 0 .. c - 1 do
+                        for k in 0 .. b - 1 do
+                            res.[i, j] <- res.[i, j] + (m1.[i, k] * m2.[k, j])
+            }
+        ]
+        |> Async.Parallel
+        |> Async.RunSynchronously
+        |> ignore
+        res
+    else failwith "It's impossible to multiply matrixes of this sizes"
+        
 let extArr (a: int [,]) =
     let x = a.GetLength 0
     let y = a.GetLength 1
@@ -73,7 +106,7 @@ let extArr (a: int [,]) =
         size <- size / 2   
     if size = 1
     then
-        let (arr: int[,])= Array2D.zeroCreate (max x y) (max x y)
+        let (arr: int[,]) = Array2D.zeroCreate (max x y) (max x y)
         for i = 0 to a.GetLength 0 - 1 do
             for j = 0 to a.GetLength 1 - 1 do
                 arr.[i, j] <-  a.[i, j] 
