@@ -23,7 +23,7 @@ type pairOfMatrices =
         val m2: int[,]
         val isBig: bool
         val isSparse: bool
-        new (f1, f2, m1, m2, a, b)  = {path1 = f1; path2 = f2; m1 = m1; m2 = m2; isBig = a; isSparse = b} 
+        new (f1, f2, m1, m2, size, sparse)  = {path1 = f1; path2 = f2; m1 = m1; m2 = m2; isBig = size; isSparse = sparse} 
 
 type msgBalancer =
     | EOS of AsyncReplyChannel<unit>
