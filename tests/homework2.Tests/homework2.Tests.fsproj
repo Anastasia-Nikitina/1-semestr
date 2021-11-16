@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.*" />
     <ProjectReference Include="..\..\src\homework_2\homework.fsproj" />
     <ProjectReference Include="..\..\homework4\homework4.fsproj" />
-    <PackageReference Update="FSharp.Core" Version="4.*" />
+    <PackageReference Update="FSharp.Core" Version="5.0.0.0" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
