@@ -6,8 +6,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.Markup.Xaml;
-using BigIntCalculator;
-
 using static BigIntCalculator.Interpreter;
 
 namespace GUI.Views
