@@ -610,9 +610,9 @@ Target.create "Release" ignore
 
 "DotnetRestore"
     ==> "DotnetBuild"
-    //==> "FSharpAnalyzers"
-    ==> "DotnetTest"
-    =?> ("GenerateCoverageReport", not disableCodeCoverage)
+    // ==> "FSharpAnalyzers"
+    // ==> "DotnetTest"
+    // =?> ("GenerateCoverageReport", not disableCodeCoverage)
     ==> "CreatePackages"
     ==> "GitRelease"
     ==> "GitHubRelease"
@@ -625,4 +625,4 @@ Target.create "Release" ignore
 // Target Start
 //-----------------------------------------------------------------------------
 
-Target.runOrDefaultWithArguments "CreatePackages"
+Target.runOrDefaultWithArguments "DotnetRestore"
