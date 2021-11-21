@@ -121,7 +121,8 @@ namespace GUI.Views
                     Dispatcher.UIThread.Post(() =>
                     {
                         _run.IsEnabled = true;
-                        _console.Text += "Process finished" + "\n";
+                        _console.Text += "Process finished" + "\n" + "-----------------------------------------------" + "\n";
+                        
                     });
                 }
                 catch (Exception except)
