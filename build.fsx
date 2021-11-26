@@ -611,8 +611,8 @@ Target.create "Release" ignore
 "DotnetRestore"
     ==> "DotnetBuild"
     // ==> "FSharpAnalyzers"
-    // ==> "DotnetTest"
-    // =?> ("GenerateCoverageReport", not disableCodeCoverage)
+    ==> "DotnetTest"
+    =?> ("GenerateCoverageReport", not disableCodeCoverage)
     ==> "CreatePackages"
     ==> "GitRelease"
     ==> "GitHubRelease"
