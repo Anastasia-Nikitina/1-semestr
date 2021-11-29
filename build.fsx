@@ -92,7 +92,7 @@ Target.create "Build" (fun _ ->
 Target.create "Test" (fun _ ->
     exec "dotnet"  @"run --project .\tests\homework2.Tests\homework2.Tests.fsproj" "."
     exec "dotnet"  @"run --project .\tests\hw6Tests\hw6Tests.fsproj" "."
-    exec "dotnet"  @"run --project .\tests\hw8Test\hw8Test.fsproj" "."
+    // exec "dotnet"  @"run --project .\tests\hw8Test\hw8Test.fsproj" "."
     exec "dotnet"  @"run --project .\tests\NUnitTestProject1\hw7Tests.fsproj" "."
 )
 
