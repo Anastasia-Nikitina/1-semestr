@@ -9,7 +9,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         dotnet: ['5.0.x']
-        
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -18,15 +17,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ matrix.dotnet }}
-      env:
-          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Restore tools
       run: dotnet tool restore
     - name: Restore dependencies
       run: dotnet restore
-      env:
-          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Run build
       run: dotnet fake build -t Test
-      env:
-          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
