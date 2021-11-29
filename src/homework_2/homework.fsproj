@@ -1,29 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="FunctionsHw3.fs" />
-    <Compile Include="Functions.fs" />
-    <Compile Include="Program.fs" />
-  </ItemGroup>
-  <PropertyGroup>
-    <Title>homework_2</Title>
-    <Description>homework_2 does the thing!</Description>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <Optimize>true</Optimize>
-    <Tailcalls>true</Tailcalls>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Argu" Version="6.1.1" />
-    <PackageReference Include="Expecto" Version="8.13.1" />
-  </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+    <ItemGroup>
+        <Compile Include="FunctionsHw3.fs"/>
+        <Compile Include="Functions.fs"/>
+        <Compile Include="Program.fs"/>
+    </ItemGroup>
+    <PropertyGroup>
+        <Title>homework_2</Title>
+        <Description>homework_2 does the thing!</Description>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <Optimize>true</Optimize>
+        <Tailcalls>true</Tailcalls>
+    </PropertyGroup>
+    <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
